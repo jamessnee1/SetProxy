@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +29,12 @@ public class AppData {
     //when turn proxy button on/off is pressed, store host name and port here
     private static String hostName;
     private static String port;
+    
+    //bufferedreader for file
+    private static BufferedReader br;
+    
+    //ArrayList for file
+    private static ArrayList<String> prefsFile = new ArrayList<String>();
     
     //boolean to check if proxy is on or off
     private static boolean proxyCheck;
@@ -118,23 +125,53 @@ public class AppData {
     }
     
     //Open File
-    public static BufferedReader openFile(String location) throws FileNotFoundException, IOException{
+    public static void openFile(String location) throws FileNotFoundException, IOException{
         
-        BufferedReader br = null;
+        BufferedReader buffer = null;
        
         try {
-            br = new BufferedReader(new FileReader(location));
+            buffer = new BufferedReader(new FileReader(location));
         }
         catch(IOException ex){
             ex.printStackTrace();
         }
         
-        return br;
+        //set br to this br 
+        AppData.br = buffer;
     }
     
     //Close File
     public static void closeFile(BufferedReader br) throws IOException{
         br.close();
+    }
+    
+    //read each file line into arraylist
+    public static void readFile(BufferedReader br) throws IOException{
+        
+        String currentLine = "null";
+        //iterate through file
+        while(((currentLine = br.readLine()) != null)){
+            //add to arraylist
+            AppData.prefsFile.add(currentLine);
+
+        }
+
+    }
+    
+    //write arraylist out to file
+    public static void writeFile(ArrayList<String> list) throws IOException{
+        
+        FileWriter writer = new FileWriter(AppData.getInstance().getFirefoxUserPrefsPath());
+        
+        //iterate through file
+        for(int i = 0; i < list.size(); i++){
+            writer.write(list.get(i));
+        }
+        
+        //close both writer and the BufferedReader
+        writer.close();
+        br.close();
+
     }
     
     //method to check firefox proxy settings
@@ -180,30 +217,36 @@ public class AppData {
             String portRe = "port\",\\s(\\d{0,5})";
             String re3 = "network.proxy.http_port";
 
-            BufferedReader br = openFile(AppData.getInstance().getFirefoxUserPrefsPath());
-			
+            openFile(AppData.getInstance().getFirefoxUserPrefsPath());
+            
+            //read file to array
+            readFile(AppData.br);
+            
             //iterate through file
-            while((currentLine = br.readLine()) != null){
-                //use Regular Expression to get the proxy hostname
-                if(currentLine.contains(re2)){
+            for(int i = 0; i < AppData.prefsFile.size(); i++){
+                
+                String curr = AppData.prefsFile.get(i);
+                
+                if(curr.contains(re2)){
                     //if not empty
-                    if(!currentLine.isEmpty()){
+                    if(!curr.isEmpty()){
                         Pattern pattern = Pattern.compile(hostNameRe);
-                        Matcher matcher = pattern.matcher(currentLine);
+                        Matcher matcher = pattern.matcher(curr);
                         if(matcher.find()){
                             System.out.println(matcher.group(1));
                             //set matched characters to string
                             AppData.getInstance().setFoundHostName(matcher.group(1));
                         }
                     }
-                                    
+                    
                 }
+                
                 //use Regular Expression to get the proxy port
-                if(currentLine.contains(re3)){
+                if(curr.contains(re3)){
                 //if not empty
-                    if(!currentLine.isEmpty()){
+                    if(!curr.isEmpty()){
                         Pattern pattern = Pattern.compile(portRe);
-                        Matcher matcher = pattern.matcher(currentLine);
+                        Matcher matcher = pattern.matcher(curr);
                         if(matcher.find()){
                             System.out.println(matcher.group(1));
                             //set matched characters to string
@@ -211,22 +254,22 @@ public class AppData {
                         }
                     }     
                 }
-		//use Regular Expression to get if proxy turned on
-		if(currentLine.contains(re)){
+                
+                //use Regular Expression to get if proxy turned on
+		if(curr.contains(re)){
                     //check if Proxy is enabled in Firefox
-                    if(currentLine.contains("0")){
-                    System.out.println("Firefox Proxy Off! " + currentLine);
+                    if(curr.contains("0")){
+                    System.out.println("Firefox Proxy Off! " + curr);
                     isProxyEnabled = false;
                     }
                     else {
-                        System.out.println("Firefox Proxy On! " + currentLine);
+                        System.out.println("Firefox Proxy On! " + curr);
 			isProxyEnabled = true;
                     }
 		}
+                
             }
-            
-            closeFile(br);
-			
+		
 	}
 	catch(IOException e){
             e.printStackTrace();
@@ -327,7 +370,7 @@ public class AppData {
                 String currentLine = null;
                 
                 try {
-                    BufferedReader br = openFile(AppData.getInstance().getFirefoxUserPrefsPath());
+                    openFile(AppData.getInstance().getFirefoxUserPrefsPath());
                     //iterate through file.
                     while((currentLine = br.readLine()) != null){
                         if(currentLine.contains(re)){

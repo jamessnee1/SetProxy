@@ -53,6 +53,7 @@ public class SetProxyGUI extends javax.swing.JFrame {
         radioButtonGroup = new javax.swing.ButtonGroup();
         headingPanel = new javax.swing.JPanel();
         mainLabel = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         buttonPanel = new javax.swing.JPanel();
         hostnameLabel = new javax.swing.JLabel();
         portLabel = new javax.swing.JLabel();
@@ -65,28 +66,37 @@ public class SetProxyGUI extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Set Proxy");
 
-        headingPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(0));
+        headingPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         mainLabel.setText("Set Proxy for JMeter v1.0. By James Snee. (c) 2016.");
+
+        jLabel1.setText("Please ensure Firefox is closed before turning proxy on or off.");
 
         javax.swing.GroupLayout headingPanelLayout = new javax.swing.GroupLayout(headingPanel);
         headingPanel.setLayout(headingPanelLayout);
         headingPanelLayout.setHorizontalGroup(
             headingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headingPanelLayout.createSequentialGroup()
-                .addContainerGap(95, Short.MAX_VALUE)
-                .addComponent(mainLabel)
-                .addGap(89, 89, 89))
+            .addGroup(headingPanelLayout.createSequentialGroup()
+                .addContainerGap(76, Short.MAX_VALUE)
+                .addGroup(headingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headingPanelLayout.createSequentialGroup()
+                        .addComponent(mainLabel)
+                        .addGap(89, 89, 89))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headingPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(64, 64, 64))))
         );
         headingPanelLayout.setVerticalGroup(
             headingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(headingPanelLayout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addComponent(mainLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
-                .addGap(29, 29, 29))
+                .addGap(4, 4, 4)
+                .addComponent(jLabel1)
+                .addContainerGap())
         );
 
-        buttonPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(0));
+        buttonPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         hostnameLabel.setText("HostName:");
 
@@ -273,6 +283,7 @@ public class SetProxyGUI extends javax.swing.JFrame {
     private javax.swing.JPanel headingPanel;
     private javax.swing.JLabel hostnameLabel;
     private javax.swing.JTextField hostnameTextField;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel mainLabel;
     private javax.swing.JLabel portLabel;
     private javax.swing.JTextField portTextField;
